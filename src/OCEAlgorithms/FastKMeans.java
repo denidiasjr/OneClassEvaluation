@@ -1,4 +1,4 @@
-package br.deni.oneclassevaluation;
+package OCEAlgorithms;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,10 +14,10 @@ import weka.core.converters.ConverterUtils.DataSource;
  *
  * @author deni
  */
-public class FastKMeansDeni extends Classifier {
+public class FastKMeans extends Classifier {
 
     public static void main(String[] args) throws Exception {
-        FastKMeansDeni classifier = new FastKMeansDeni();
+        FastKMeans classifier = new FastKMeans();
         classifier.buildClassifier(new DataSource("/home/deni/Desktop/arffFiles/CSTR.arff").getDataSet());
     }
 
@@ -48,7 +48,7 @@ public class FastKMeansDeni extends Classifier {
     private int numInstancias;
 
     // Constructor
-    public FastKMeansDeni() {
+    public FastKMeans() {
         super();
         this.k = 5;
         this.maximoIteracoes = 100;

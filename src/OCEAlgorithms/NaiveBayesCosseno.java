@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package br.deni.oneclassevaluation;
+package OCEAlgorithms;
 
 import weka.classifiers.Classifier;
 import weka.core.Instances;
@@ -13,14 +13,14 @@ import weka.core.Instance;
  *
  * @author deni
  */
-public class NaiveDeniCosseno extends Classifier {
+public class NaiveBayesCosseno extends Classifier {
 
     private double[] mediaAtributos;
     private double[] desvioAtributos;
     private double threshold;
 
     // Construtor
-    public NaiveDeniCosseno() {
+    public NaiveBayesCosseno() {
         super();
     }
 

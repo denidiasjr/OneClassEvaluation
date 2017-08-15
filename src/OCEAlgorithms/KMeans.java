@@ -3,10 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package br.deni.oneclassevaluation;
+package OCEAlgorithms;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Random;
 import weka.classifiers.Classifier;
 import weka.core.Instance;
@@ -17,11 +19,11 @@ import weka.core.converters.ConverterUtils.DataSource;
  *
  * @author deni
  */
-public class KMeansDeni extends Classifier {
+public class KMeans extends Classifier {
 
     public static void main(String[] args) throws Exception {
-        KMeansDeni classifier = new KMeansDeni();
-        classifier.buildClassifier(new DataSource("/home/deni/Desktop/arffFiles/CSTR.arff").getDataSet());
+        KMeans classifier = new KMeans();
+        classifier.buildClassifier(new DataSource("/home/deni/Documents/TCC/arffFiles/CSTR.arff").getDataSet());
     }
 
     // K number
@@ -49,17 +51,21 @@ public class KMeansDeni extends Classifier {
     // Iteracao atual
     private int iteracao;
 
-    // Captura a troca entre os documentos
-    private int[][] trocaDocumentos;
+    // Os a quais grupos as intancias pertenciam anteriormente
+    private int[] gruposAnterior;
+
+    // Captura a porcentagem de troca entre as instancias
+    private double porcentagemTroca;
 
     // Constructor
-    public KMeansDeni() {
+    public KMeans() {
         super();
         this.k = 5;
         this.maximoIteracoes = 100;
         this.threshold = 0.1;
         this.convergencia = 0;
         this.iteracao = 0;
+        this.porcentagemTroca = -1;
     }
 
     @Override
@@ -68,10 +74,10 @@ public class KMeansDeni extends Classifier {
         // Inicializacao das variaveis do classificador
         int numAtributos = dataTrain.numAttributes() - 1;
         int numInstancias = dataTrain.numInstances();
-        //this.trocaDocumentos = capturaMatrizZerada(k, numInstancias);
 
         // Define os Grupos
         grupos = defineGrupos();
+        gruposAnterior = new int[numInstancias];
         coesaoGrupos = new double[k];
         coesaoGruposAnterior = new double[k];
 
@@ -93,6 +99,7 @@ public class KMeansDeni extends Classifier {
             recalculaGrupos(dataTrain);
             defineCentroides(dataTrain);
             imprimeIteracao();
+            verificaTrocas();
         }
     }
 
@@ -125,6 +132,10 @@ public class KMeansDeni extends Classifier {
         this.convergencia = convergencia;
     }
 
+    public void setPorcentagem(double porcentagemTroca) {
+        this.porcentagemTroca = porcentagemTroca;
+    }
+
     // Zera o HashMap para receber as instancias
     private HashMap<Integer, ArrayList<Integer>> defineGrupos() {
 
@@ -152,6 +163,11 @@ public class KMeansDeni extends Classifier {
         return somador / (normaA * normaB);
     }
 
+    // TODO Fazer calculo do cosseno utilizando vetor de double
+    private double calculaCosseno(double[] cosseno, Instance documento) {
+        return 0.0;
+    }
+
     // Calcula a norma de uma determinada instancia
     private double calculaNorma(Instance instancia) {
 
@@ -162,6 +178,11 @@ public class KMeansDeni extends Classifier {
         }
 
         return Math.sqrt(somador);
+    }
+
+    // TODO Calcular norma para estrutura de vetor
+    private double calculaNorma(double[] norma) {
+        return 0.0;
     }
 
     // Define a configuração dos primeiros centroides
@@ -178,11 +199,11 @@ public class KMeansDeni extends Classifier {
 
             int numInstancias = grupos.get(grp).size();
             Instance centroide = capturaInstanciaZerada(dataTrain.instance(0));
-            
+
             // Percorre os atributos e soma os valores das suas instancias
             for (int atr = 0; atr < numAtributos; atr++) {
-                
-                for (int inst : grupos.get(grp)){
+
+                for (int inst : grupos.get(grp)) {
 
                     // Captura novo valor e acrescenta no centroide
                     novoValor = dataTrain.instance(inst).value(atr) / numInstancias;
@@ -196,11 +217,22 @@ public class KMeansDeni extends Classifier {
     }
 
     // Recalcula os grupos criados pelos centroides
-    // TODO captura a troca de grupos das instancias
     private void recalculaGrupos(Instances dataTrain) {
 
         int numInstancias = dataTrain.numInstances();
 
+        // Captura as trocas entre os documentos
+        Iterator iter = grupos.keySet().iterator();
+        while (iter.hasNext()) {
+            int grupo = (int) iter.next();
+
+            // Percorre as instancias dos grupos
+            for (int instancia : grupos.get(grupo)) {
+                gruposAnterior[instancia] = grupo;
+            }
+        }
+
+        // TODO neste momento devemos cadastrar as instancias dos documentos
         grupos = defineGrupos();
 
         // Percorre a coesao anterior
@@ -221,6 +253,34 @@ public class KMeansDeni extends Classifier {
 
     }
 
+    // Verifica frequencia de trocas entre os documentos
+    private void verificaTrocas() {
+
+        int numTrocas = 0;
+
+        // Captura as trocas entre os documentos
+        Iterator iter = grupos.keySet().iterator();
+        while (iter.hasNext()) {
+            int grupo = (int) iter.next();
+
+            // Percorre as instancias dos grupos
+            for (int instancia : grupos.get(grupo)) {
+
+                if (gruposAnterior[instancia] != grupo) {
+                    numTrocas++;
+                }
+            }
+        }
+
+        double porcentagem = (numTrocas * 100) / gruposAnterior.length;
+
+        // Verificar se a porcentagem de troca esta menor que a definida
+        if (porcentagem <= porcentagemTroca) {
+            System.exit(0);
+        }
+
+    }
+
     // Gera uma instancia zerada a partir de outra instancia
     private Instance capturaInstanciaZerada(Instance instancia) {
         Instance novaInstancia = new Instance(instancia);
@@ -228,18 +288,6 @@ public class KMeansDeni extends Classifier {
             novaInstancia.setValue(atr, 0);
         }
         return novaInstancia;
-    }
-    
-    // Zera Matriz de int
-    private int[][] capturaMatrizZerada(int a, int b){
-        int[][] novaMatriz = new int[a][b];
-        for (int i = 0; i < a; i++){
-            for (int y = 0; y < b; y++){
-                novaMatriz[a][b] = 0;
-            }
-        }
-        
-        return novaMatriz;
     }
 
     // Captura grupo da instancia atual

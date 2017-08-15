@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package br.deni.oneclassevaluation;
+package OCEAlgorithms;
 
 import weka.classifiers.Classifier;
 import weka.core.Instances;
@@ -13,13 +13,13 @@ import weka.core.Instance;
  *
  * @author deni
  */
-public class NaiveMultinomialDeni extends Classifier {
+public class NaiveMultinomial extends Classifier {
 
     private double[] probTerms;
     private double threshold;
 
     // Construtor
-    public NaiveMultinomialDeni() {
+    public NaiveMultinomial() {
         super();
     }
 

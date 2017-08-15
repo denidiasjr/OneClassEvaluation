@@ -1,5 +1,6 @@
-package br.deni.oneclassevaluation;
+package OCE;
 
+import OCEAlgorithms.KMeans;
 import weka.classifiers.Classifier;
 import weka.core.Instances;
 import weka.core.converters.ConverterUtils.DataSource;
@@ -23,7 +24,7 @@ public class Main {
         dataOriginal.setClassIndex(numAttributes - 1);
         int numClasses = dataOriginal.numClasses();
 
-        KMeansDeni naiveDeni = new KMeansDeni();
+        KMeans naiveDeni = new KMeans();
         naiveDeni.setThreshold(0.0000000001);
 
         for (int classe = 0; classe < numClasses; classe++) {
