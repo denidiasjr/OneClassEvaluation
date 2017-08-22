@@ -9,9 +9,9 @@ package OCEParameters;
  *
  * @author deni
  */
-public class ParametersNaiveMultinomial extends Parameters {
+public class ParametersMultinomialNaiveBayes extends Parameters {
     
-    public ParametersNaiveMultinomial(){
+    public ParametersMultinomialNaiveBayes(){
         super();
     }
     

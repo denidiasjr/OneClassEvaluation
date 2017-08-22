@@ -13,13 +13,13 @@ import weka.core.Instance;
  *
  * @author deni
  */
-public class NaiveMultinomial extends Classifier {
+public class MultinomialNaiveBayes extends Classifier {
 
     private double[] probTerms;
     private double threshold;
 
     // Construtor
-    public NaiveMultinomial() {
+    public MultinomialNaiveBayes() {
         super();
     }
 
