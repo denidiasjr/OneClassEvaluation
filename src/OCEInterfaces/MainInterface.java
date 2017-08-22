@@ -404,54 +404,17 @@ public class MainInterface extends javax.swing.JFrame {
     }//GEN-LAST:event_bKMEDActionPerformed
 
     private void setConfiguration(){
-        /*configuration.setNumReps(Integer.parseInt(tRep.getText()));
+               
+        configuration.setNumReps(Integer.parseInt(tRep.getText()));
         configuration.setNumFolds(Integer.parseInt(tNumFolds.getText()));
         
-        if(cNB.isSelected()){
-            configuration.setNB(true);
-            
-        }else{
-            configuration.setNB(false);
-        }
-        if(cMNB.isSelected()){
-            configuration.setMNB(true);
-        }else{
-            configuration.setMNB(false);
-        }
-        if(cKME.isSelected()){
-            configuration.setJ48(true);
-        }else{
-            configuration.setJ48(false);
-        }
-        if(cKMED.isSelected()){
-            configuration.setSMO(true);
-        }else{
-            configuration.setSMO(false);
-        }
-        if(cKNN.isSelected()){
-            configuration.setKNN(true);
-        }else{
-            configuration.setKNN(false);
-        }
-        if(cMLP.isSelected()){
-            configuration.setMLP(true);
-        }else{
-            configuration.setMLP(false);
-        }
-        if(cIMBHN.isSelected()){
-            configuration.setIMBHN(true);
-        }else{
-            configuration.setIMBHN(false);
-        }
-        if(cIMBHN2.isSelected()){
-            configuration.setIMBHN2(true);
-        }else{
-            configuration.setIMBHN2(false);
-        }
-        
-        configuration.setDirEntrada(tDirIn.getText());
-        configuration.setDirSaida(tDirOut.getText());*/
-        
+        cNB.isSelected() ? configuration.setNB(true) : configuration.setNB(false);
+        cMNB.isSelected() ? configuration.setMNB(true) : configuration.setMNB(false);
+        cKME.isSelected() ? configuration.setKME(true) : configuration.setKME(false);
+        cKMED.isSelected() ? configuration.setKMED(true) : configuration.setKMED(false);
+               
+        configuration.setDirInput(tDirIn.getText());
+        configuration.setDirOutput(tDirOut.getText());        
     }
     
     private void bExecutarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bExecutarActionPerformed
