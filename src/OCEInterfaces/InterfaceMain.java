@@ -3,10 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package OCEInterfaces;
 
 import OCEConfigurations.Configuration;
+import OCEUtils.FileChooser;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.io.File;
@@ -20,10 +20,10 @@ import javax.swing.filechooser.FileNameExtensionFilter;
  *
  * @author ragero
  */
-public class MainInterface extends javax.swing.JFrame {
-    
+public class InterfaceMain extends javax.swing.JFrame {
+
     public static void main(String[] args) {
-        new MainInterface(new Configuration());
+        new InterfaceMain(new Configuration());
     }
 
     /**
@@ -31,14 +31,18 @@ public class MainInterface extends javax.swing.JFrame {
      * Interface_SemiSupervisedInductiveClassification_OnlyLabeledExamples
      */
     Configuration configuration;
-    
-    public MainInterface(Configuration configuration) {
+
+    public InterfaceMain(Configuration configuration) {
         this.configuration = configuration;
         setLookAndFeel();
+        
+        // Define onde inicializar a tela
+        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+        this.setLocation(dim.width / 2 - getSize().width / 2, dim.height / 2 - getSize().height / 2);
         initComponents();
         this.setVisible(true);
     }
-    
+
     private void setLookAndFeel() {
 
         // Get current OS to show best look and feel
@@ -342,12 +346,9 @@ public class MainInterface extends javax.swing.JFrame {
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(bFechar)
@@ -356,8 +357,6 @@ public class MainInterface extends javax.swing.JFrame {
                     .addComponent(lblAbout, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
-
-        lblAbout.getAccessibleContext().setAccessibleName("<html> <u>About</u> <html>");
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -377,22 +376,22 @@ public class MainInterface extends javax.swing.JFrame {
         save.showSaveDialog(null);
 
         File config = save.getSelectedFile();
-        if(config == null){
+        if (config == null) {
             return;
         }
         String fileName = config.toString();
 
         FileOutputStream file;
         ObjectOutputStream obj;
-        try{
-            if(!fileName.endsWith(".tct")){
+        try {
+            if (!fileName.endsWith(".tct")) {
                 fileName = fileName + ".tct";
             }
             file = new FileOutputStream(fileName);
             obj = new ObjectOutputStream(file);
             obj.writeObject(configuration);
             obj.close();
-        }catch(Exception e){
+        } catch (Exception e) {
             System.err.println("Error when saving configuration object.");
             e.printStackTrace();
             System.exit(0);
@@ -403,31 +402,50 @@ public class MainInterface extends javax.swing.JFrame {
         //TODO
     }//GEN-LAST:event_bKMEDActionPerformed
 
-    private void setConfiguration(){
-               
+    private void setConfiguration() {
+
         configuration.setNumReps(Integer.parseInt(tRep.getText()));
         configuration.setNumFolds(Integer.parseInt(tNumFolds.getText()));
-        
-        cNB.isSelected() ? configuration.setNB(true) : configuration.setNB(false);
-        cMNB.isSelected() ? configuration.setMNB(true) : configuration.setMNB(false);
-        cKME.isSelected() ? configuration.setKME(true) : configuration.setKME(false);
-        cKMED.isSelected() ? configuration.setKMED(true) : configuration.setKMED(false);
-               
+
+        if (cNB.isSelected()) {
+            configuration.setNB(true);
+        } else {
+            configuration.setNB(false);
+        }
+
+        if (cMNB.isSelected()) {
+            configuration.setMNB(true);
+        } else {
+            configuration.setMNB(false);
+        }
+
+        if (cKME.isSelected()) {
+            configuration.setKME(true);
+        } else {
+            configuration.setKME(false);
+        }
+
+        if (cKMED.isSelected()) {
+            configuration.setKMED(true);
+        } else {
+            configuration.setKMED(false);
+        }
+
         configuration.setDirInput(tDirIn.getText());
-        configuration.setDirOutput(tDirOut.getText());        
+        configuration.setDirOutput(tDirOut.getText());
     }
-    
+
     private void bExecutarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bExecutarActionPerformed
         setConfiguration();
         // TODO
     }//GEN-LAST:event_bExecutarActionPerformed
 
     private void bProcurarDirInActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bProcurarDirInActionPerformed
-        // TODO
+        tDirIn.setText(FileChooser.chooseDirectory());
     }//GEN-LAST:event_bProcurarDirInActionPerformed
 
     private void bProcurarDirOutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bProcurarDirOutActionPerformed
-        // TODO
+        tDirOut.setText(FileChooser.chooseDirectory());
     }//GEN-LAST:event_bProcurarDirOutActionPerformed
 
     private void bKMEActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bKMEActionPerformed
@@ -435,21 +453,18 @@ public class MainInterface extends javax.swing.JFrame {
     }//GEN-LAST:event_bKMEActionPerformed
 
     private void lLegendMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lLegendMouseClicked
-        /*String text = "<html>\n" +
-        "<b>NB</b> - Naive Bayes <br>\n" +
-        "<b>MNB</b> - Multinomial Naive Bayes <br>\n" +
-        "<b>J48</b> - Weka's implementation of C4.5\n" +
-        "<b>SMO</b> - Sequential Minimal Optimization (Weka's implementation of Support Vector Machines)<br>\n" +
-        "<b>KNN</b> - <i>K</i> Nearest Neighbors<br>\n" +
-        "<b>MLP</b> - Multi-Layer Perceptron<br>\n" +
-        "<b>IMBHN<sup>C</sup></b> - Inductive Model Generation based on Bipartite Heterogeneous Network (with classification function)<br>\n" +
-        "<b>IMBHN<sup>R</sup></b> - Inductive Model Generation based on Bipartite Heterogeneous Network (with regression function)<br>\n" +
-        "</html>";
-        new Interface_Legend(text);*/
+        String text = "<b>NB</b> - Naive Bayes <br>\n"
+                + "<b>MNB</b> - Multinomial Naive Bayes <br>\n"
+                + "<b>KME</b> - KMeans<br>\n"
+                + "<b>KMED</b> - KMedoid<br>\n";
+        new InterfaceLegend(text);
     }//GEN-LAST:event_lLegendMouseClicked
 
     private void lblAboutMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblAboutMouseClicked
-        // TODO add your handling code here:
+        String text = "<b>Developed by:</b><br> Deni Dias da Silva Junior "
+                + "<br> Rafael Geraldeli Rossi"
+                + "<br>https://github.com/denidiasjr/OneClassEvaluation";
+        new InterfaceLegend(text);
     }//GEN-LAST:event_lblAboutMouseClicked
 
 
