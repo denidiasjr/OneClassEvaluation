@@ -1,6 +1,7 @@
 package OCE;
 
 import OCEAlgorithms.KMeans;
+import OCEAlgorithms.NaiveBayes;
 import weka.classifiers.Classifier;
 import weka.core.Instances;
 import weka.core.converters.ConverterUtils.DataSource;
@@ -14,7 +15,7 @@ public class Main {
     public static void main(String[] args) throws Exception {
 
         // Read arff file and catch it's Instances
-        DataSource dataSource = new DataSource("/home/deni/Desktop/arffFiles/CSTR.arff");
+        DataSource dataSource = new DataSource("/home/deni/Documents/TCC/arffFiles/iris.arff");
         Instances dataOriginal = dataSource.getDataSet();
 
         // Count dataOriginal and attributes
@@ -24,25 +25,36 @@ public class Main {
         dataOriginal.setClassIndex(numAttributes - 1);
         int numClasses = dataOriginal.numClasses();
 
-        KMeans naiveDeni = new KMeans();
+        NaiveBayes naiveDeni = new NaiveBayes();
         naiveDeni.setThreshold(0.0000000001);
 
         for (int classe = 0; classe < numClasses; classe++) {
 
             for (int fold = 0; fold < 10; fold++) {
 
+                naiveDeni.setThreshold(0);
+
                 Instances dataTrain = new Instances(dataOriginal, 0);
                 Instances dataTest = new Instances(dataOriginal, 0);
 
                 splitTrainTest(dataOriginal, dataTrain, dataTest, classe, fold);
 
-                Integer[][] confusionMatrix = createConfusionMatrix();
+                /*while (true) {
 
-                naiveDeni.buildClassifier(dataTrain);
-                oneClassEvaluation(naiveDeni, dataTest, confusionMatrix, classe);
-                
-                printConfusionMatrix(classe, fold, confusionMatrix);
-                printStatistics(confusionMatrix);
+                    Integer[][] confusionMatrix = createConfusionMatrix();
+
+                    naiveDeni.buildClassifier(dataTrain);
+                    oneClassEvaluation(naiveDeni, dataTest, confusionMatrix, classe);
+
+                    printConfusionMatrix(classe, fold, confusionMatrix);
+                    printStatistics(confusionMatrix);
+
+                    double threshold = naiveDeni.getThreshold();
+                    double eta = 0.000000000001;
+                    threshold += eta * ((confusionMatrix[0][1] - confusionMatrix[1][0]) / confusionMatrix[0][1]);
+                    naiveDeni.setThreshold(threshold);
+                    System.out.println(threshold);
+                }*/
             }
         }
 
@@ -92,7 +104,7 @@ public class Main {
 
                 // Adiciona na matriz de confusao
                 confusionMatrix[resultado][classeReal]++;
-               
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -114,14 +126,14 @@ public class Main {
     }
 
     // Apresenta a matriz de confusao
-    public static void printConfusionMatrix(int classNumber, int foldNumber, Integer[][] confusionMatrix){
-        
-        System.out.println("\nClass: "+classNumber);
-        System.out.println("Fold: "+foldNumber);
+    public static void printConfusionMatrix(int classNumber, int foldNumber, Integer[][] confusionMatrix) {
+
+        System.out.println("\nClass: " + classNumber);
+        System.out.println("Fold: " + foldNumber);
         System.out.println("Matriz:");
-        for (int i=0; i < 2; i++){
-            for (int y=0; y < 2; y++){
-                System.out.print("\t"+confusionMatrix[i][y]+"    ");
+        for (int i = 0; i < 2; i++) {
+            for (int y = 0; y < 2; y++) {
+                System.out.print("\t" + confusionMatrix[i][y] + "    ");
             }
             System.out.println();
         }
@@ -129,29 +141,28 @@ public class Main {
 
     // Apresenta as estatisticas da matriz de confusao
     private static void printStatistics(Integer[][] confusionMatrix) {
-     
+
         double vp = confusionMatrix[0][0];
         double fp = confusionMatrix[0][1];
         double fn = confusionMatrix[1][0];
         double vn = confusionMatrix[1][1];
-        
-        double accuracy = (vp+vn)/(vp+vn+fp+fn);
-        double precision = (vp)/(vp+fp);
-        double recall = (vp)/(vp+fn);
-        
-        if (Double.isNaN(precision)){
+
+        double accuracy = (vp + vn) / (vp + vn + fp + fn);
+        double precision = (vp) / (vp + fp);
+        double recall = (vp) / (vp + fn);
+
+        if (Double.isNaN(precision)) {
             precision = 0;
         }
-        
-        if (Double.isNaN(recall)){
+
+        if (Double.isNaN(recall)) {
             recall = 0;
         }
-        
-        System.out.println("\nAccuracy: "+accuracy);
-        System.out.println("Precision: "+precision);
-        System.out.println("Recall: "+recall);
+
+        System.out.println("\nAccuracy: " + accuracy);
+        System.out.println("Precision: " + precision);
+        System.out.println("Recall: " + recall);
         System.out.println("");
     }
 
-    
 }
