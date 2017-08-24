@@ -9,7 +9,7 @@ package OCEParameters;
  *
  * @author deni
  */
-public class ParametersKMedoid {
+public class ParametersKMedoid extends Parameters {
     
     private int maxIteracoes;
     private int k;

@@ -6,13 +6,20 @@
 package OCEInterfaces;
 
 import OCEConfigurations.Configuration;
+import OCEParameters.ParametersKMeans;
 import OCEUtils.FileChooser;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -35,7 +42,7 @@ public class InterfaceMain extends javax.swing.JFrame {
     public InterfaceMain(Configuration configuration) {
         this.configuration = configuration;
         setLookAndFeel();
-        
+
         // Define onde inicializar a tela
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         this.setLocation(dim.width / 2 - getSize().width / 2, dim.height / 2 - getSize().height / 2);
@@ -106,6 +113,7 @@ public class InterfaceMain extends javax.swing.JFrame {
         bProcurarDirIn = new javax.swing.JButton();
         bProcurarDirOut = new javax.swing.JButton();
         lblAbout = new javax.swing.JLabel();
+        bAbrir = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("OCE - One Class Evaluation");
@@ -235,7 +243,7 @@ public class InterfaceMain extends javax.swing.JFrame {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(tNumFolds, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(tRep, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(23, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -315,6 +323,13 @@ public class InterfaceMain extends javax.swing.JFrame {
             }
         });
 
+        bAbrir.setText("Open Configurations");
+        bAbrir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bAbrirActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -324,20 +339,25 @@ public class InterfaceMain extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(lblAbout, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(8, 8, 8))))
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(6, 6, 6)
-                        .addComponent(lblAbout, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(bExecutar, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(bAbrir)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(bSalvar)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(bFechar, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -347,14 +367,17 @@ public class InterfaceMain extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(lblAbout, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(bFechar)
                         .addComponent(bSalvar)
-                        .addComponent(bExecutar))
-                    .addComponent(lblAbout, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(bAbrir))
+                    .addComponent(bExecutar))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -384,8 +407,8 @@ public class InterfaceMain extends javax.swing.JFrame {
         FileOutputStream file;
         ObjectOutputStream obj;
         try {
-            if (!fileName.endsWith(".tct")) {
-                fileName = fileName + ".tct";
+            if (!fileName.endsWith(".oce")) {
+                fileName = fileName + ".oce";
             }
             file = new FileOutputStream(fileName);
             obj = new ObjectOutputStream(file);
@@ -399,7 +422,7 @@ public class InterfaceMain extends javax.swing.JFrame {
     }//GEN-LAST:event_bSalvarActionPerformed
 
     private void bKMEDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bKMEDActionPerformed
-        //TODO
+        JOptionPane.showMessageDialog(null, "TODO");
     }//GEN-LAST:event_bKMEDActionPerformed
 
     private void setConfiguration() {
@@ -449,7 +472,7 @@ public class InterfaceMain extends javax.swing.JFrame {
     }//GEN-LAST:event_bProcurarDirOutActionPerformed
 
     private void bKMEActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bKMEActionPerformed
-        // TODO
+        new InterfaceParametersKME(new ParametersKMeans());
     }//GEN-LAST:event_bKMEActionPerformed
 
     private void lLegendMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lLegendMouseClicked
@@ -463,12 +486,68 @@ public class InterfaceMain extends javax.swing.JFrame {
     private void lblAboutMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblAboutMouseClicked
         String text = "<b>Developed by:</b><br> Deni Dias da Silva Junior "
                 + "<br> Rafael Geraldeli Rossi"
-                + "<br>https://github.com/denidiasjr/OneClassEvaluation";
+                + "<br><br>https://github.com/denidiasjr/OneClassEvaluation";
         new InterfaceLegend(text);
     }//GEN-LAST:event_lblAboutMouseClicked
 
+    private void applySavedConfiguration() {
+        
+        tRep.setText(String.valueOf(configuration.getNumReps()));
+        tNumFolds.setText(String.valueOf(configuration.getNumFolds()));
+
+        if (configuration.isNB()) {
+            cNB.setSelected(true);
+        } else {
+            cNB.setSelected(false);
+        }
+        
+        if (configuration.isMNB()) {
+            cMNB.setSelected(true);
+        } else {
+            cMNB.setSelected(false);
+        }
+
+        if (configuration.isKME()) {
+            cKME.setSelected(true);
+        } else {
+            cKME.setSelected(false);
+        }
+        
+        if (configuration.isKMED()) {
+            cKMED.setSelected(true);
+        } else {
+            cKMED.setSelected(false);
+        }
+
+        tDirIn.setText(configuration.getDirInput());
+        tDirOut.setText(configuration.getDirOutput());
+    }
+
+    private void bAbrirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bAbrirActionPerformed
+
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setFileFilter(new FileNameExtensionFilter("One Class Evaluation (*.oce)", "oce"));
+        fileChooser.setAcceptAllFileFilterUsed(false);
+        int result = fileChooser.showOpenDialog(null);
+
+        if (result == JFileChooser.APPROVE_OPTION) {
+            try {
+                FileInputStream file = new FileInputStream(fileChooser.getSelectedFile());
+                ObjectInputStream obj = new ObjectInputStream(file);
+                this.configuration = (Configuration) obj.readObject();
+                applySavedConfiguration();
+                obj.close();
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(null, "Error while selecting .oce file");
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Error while selecting .oce file");
+        }
+    }//GEN-LAST:event_bAbrirActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton bAbrir;
     private javax.swing.JButton bExecutar;
     private javax.swing.JButton bFechar;
     private javax.swing.JButton bKME;
