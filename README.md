@@ -1,11 +1,12 @@
 # OneClassEvaluation
 
-Under development 🙂
+OneClassEvaluation is a project to code some machine learning algorithms to my final paper to college.
 
-OneClassEvaluation is an application that uses machine learning algorithms to predict if an object is from a target class or not.
+These algorithms are used for text classification using supervised learning based in One Class Classification.
 
-**Current supported algorithms:**
+**Developed algorithms:**
 - NaiveBayes
 - Multinomial NaivesBayes
 - KMeans
-- KMedoid
+
+My final paper you can read [clicking here](https://www.researchgate.net/publication/321975734_Classificacao_automatica_de_textos_utilizando_aprendizado_supervisionado_baseado_em_uma_unica_classe_-_Trabalho_de_Conclusao_de_Curso_-_UFMSCPTL).
